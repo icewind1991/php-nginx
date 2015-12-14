@@ -56,7 +56,7 @@ ADD nginx.conf nginx-app.conf /etc/nginx/
 
 
 ADD php-fpm.conf /usr/local/etc/
-ADD index.php /var/www/html
+ADD index.php /var/www/html/
 
 ADD bootstrap-nginx.sh /usr/local/bin/
 
