@@ -54,7 +54,6 @@ ADD apcu.ini opcache.ini $PHP_INI_DIR/conf.d/
 
 ADD nginx.conf nginx-app.conf /etc/nginx/
 
-
 ADD php-fpm.conf /usr/local/etc/
 ADD index.php /var/www/html/
 

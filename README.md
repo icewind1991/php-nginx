@@ -1,9 +1,9 @@
-# php7-nginx
+# php-nginx
 
-Docker image with php7 using nginx and php-fpm
+Docker image with php using nginx and php-fpm
 
 ```
-docker pull icewind1991/php7-nginx
+docker pull icewind1991/php-nginx
 ```
 
 ## Serving your code
@@ -28,6 +28,7 @@ The following php extensions are installed and enabled by default:
 - gd
 - apcu
 - opache
+- blackfire
 
 You can add additional php extensions by using the `docker-php-ext-configure` and `docker-php-ext-install` scripts. (see also the [official docker php docs](https://hub.docker.com/_/php/))
 
