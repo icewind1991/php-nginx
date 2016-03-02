@@ -9,22 +9,21 @@ RUN DEBIAN_FRONTEND=noninteractive ;\
 		libaio-dev \
 		wget \
 		unzip \
-		nano
+	&& rm -rf /var/lib/apt/lists/*
 
 # Oracle instantclient
-ADD instantclient-basic-linux.x64-12.1.0.2.0.zip /tmp/
-ADD instantclient-sdk-linux.x64-12.1.0.2.0.zip /tmp/
-ADD instantclient-sqlplus-linux.x64-12.1.0.2.0.zip /tmp/
-
-RUN unzip /tmp/instantclient-basic-linux.x64-12.1.0.2.0.zip -d /usr/local/
-RUN unzip /tmp/instantclient-sdk-linux.x64-12.1.0.2.0.zip -d /usr/local/
-RUN unzip /tmp/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip -d /usr/local/
-RUN ln -s /usr/local/instantclient_12_1 /usr/local/instantclient
-RUN ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so
-RUN ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus
-RUN echo 'instantclient,/usr/local/instantclient' | pecl install oci8
-RUN echo "extension=oci8.so" > $PHP_INI_DIR/conf.d/30-oci8.ini
-RUN rm /tmp/instantclient-*.zip
+RUN wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-basic-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-basic-linux.x64-12.1.0.2.0.zip \
+	&& wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-sdk-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-sdk-linux.x64-12.1.0.2.0.zip \
+	&& wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip \
+	&& unzip /tmp/instantclient-basic-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
+	&& unzip /tmp/instantclient-sdk-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
+	&& unzip /tmp/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
+	&& ln -s /usr/local/instantclient_12_1 /usr/local/instantclient \
+	&& ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so \
+	&& ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus \
+	&& rm /tmp/instantclient-*.zip \
+	&& echo 'instantclient,/usr/local/instantclient' | pecl install oci8 \
+	&& echo "extension=oci8.so" > $PHP_INI_DIR/conf.d/30-oci8.ini
 
 # php exceptions
 RUN apt-get update && apt-get install -y \
@@ -39,8 +38,8 @@ RUN apt-get update && apt-get install -y \
 		libicu-dev \
 	&& docker-php-ext-install iconv mcrypt zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-	&& docker-php-ext-install gd
-RUN apt-get remove -y \
+	&& docker-php-ext-install gd \
+	&& apt-get remove -y \
 		libfreetype6-dev \
 		libjpeg62-turbo-dev \
 		libmcrypt-dev \
@@ -48,15 +47,16 @@ RUN apt-get remove -y \
 		libpq-dev \
 		libsqlite3-dev \
 		libcurl4-openssl-dev \
-		libicu-dev
-RUN pecl install apcu
-ADD apcu.ini opcache.ini $PHP_INI_DIR/conf.d/
-
-RUN export VERSION=`php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` \
+		libicu-dev \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& pecl install apcu  \
+	&& export VERSION=`php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${VERSION} \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
     && mv /tmp/blackfire-*.so `php -r "echo ini_get('extension_dir');"`/blackfire.so \
     && echo "extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > $PHP_INI_DIR/conf.d/blackfire.ini
+    
+ADD apcu.ini opcache.ini $PHP_INI_DIR/conf.d/
 
 ADD nginx.conf nginx-app.conf /etc/nginx/
 
