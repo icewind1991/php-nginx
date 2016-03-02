@@ -52,7 +52,14 @@ RUN apt-get remove -y \
 RUN pecl install apcu
 ADD apcu.ini opcache.ini $PHP_INI_DIR/conf.d/
 
+RUN export VERSION=`php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` \
+    && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${VERSION} \
+    && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
+    && mv /tmp/blackfire-*.so `php -r "echo ini_get('extension_dir');"`/blackfire.so \
+    && echo "extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > $PHP_INI_DIR/conf.d/blackfire.ini
+
 ADD nginx.conf nginx-app.conf /etc/nginx/
+
 
 ADD php-fpm.conf /usr/local/etc/
 ADD index.php /var/www/html/
