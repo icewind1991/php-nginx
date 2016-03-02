@@ -1,4 +1,4 @@
-FROM php:7-fpm
+FROM php:5-fpm
 MAINTAINER  Robin Appelman <robin@icewind.nl>
 
 RUN DEBIAN_FRONTEND=noninteractive ;\
@@ -22,7 +22,7 @@ RUN wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-basic
 	&& ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so \
 	&& ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus \
 	&& rm /tmp/instantclient-*.zip \
-	&& echo 'instantclient,/usr/local/instantclient' | pecl install oci8 \
+	&& echo 'instantclient,/usr/local/instantclient' | pecl install oci8-2.0.10 \
 	&& echo "extension=oci8.so" > $PHP_INI_DIR/conf.d/30-oci8.ini
 
 # php exceptions
@@ -49,7 +49,7 @@ RUN apt-get update && apt-get install -y \
 		libcurl4-openssl-dev \
 		libicu-dev \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& pecl install apcu  \
+	&& pecl install apcu-4.0.10  \
 	&& export VERSION=`php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${VERSION} \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
