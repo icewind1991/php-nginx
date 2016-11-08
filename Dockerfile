@@ -50,6 +50,7 @@ RUN apt-get update && apt-get install -y \
 		libicu-dev \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& pecl install apcu  \
+	&& pecl install redis  \
 	&& export VERSION=`php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;"` \
     && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/amd64/${VERSION} \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
