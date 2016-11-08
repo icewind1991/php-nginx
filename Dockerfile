@@ -59,7 +59,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
     
-ADD apcu.ini opcache.ini $PHP_INI_DIR/conf.d/
+ADD apcu.ini opcache.ini redis.ini $PHP_INI_DIR/conf.d/
 
 ADD nginx.conf nginx-app.conf /etc/nginx/
 
