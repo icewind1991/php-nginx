@@ -28,7 +28,8 @@ The following php extensions are installed and enabled by default:
 - gd
 - apcu
 - opache
-- blackfire (only for php5)
+- blackfire
+- xdebug
 
 You can add additional php extensions by using the `docker-php-ext-configure` and `docker-php-ext-install` scripts. (see also the [official docker php docs](https://hub.docker.com/_/php/))
 
