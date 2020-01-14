@@ -15,6 +15,7 @@ By default nginx is configured to server code from `/var/www/html`, you can eith
 The following php extensions are installed and enabled by default:
 
 - iconv
+- inotify
 - mcrypt
 - zip
 - pdo

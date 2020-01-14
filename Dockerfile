@@ -11,20 +11,6 @@ RUN DEBIAN_FRONTEND=noninteractive ;\
 		unzip \
 	&& rm -rf /var/lib/apt/lists/*
 
-# Oracle instantclient
-RUN wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-basic-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-basic-linux.x64-12.1.0.2.0.zip \
-	&& wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-sdk-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-sdk-linux.x64-12.1.0.2.0.zip \
-	&& wget https://github.com/icewind1991/php-nginx/raw/master/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip -O /tmp/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip \
-	&& unzip /tmp/instantclient-basic-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
-	&& unzip /tmp/instantclient-sdk-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
-	&& unzip /tmp/instantclient-sqlplus-linux.x64-12.1.0.2.0.zip -d /usr/local/ \
-	&& ln -s /usr/local/instantclient_12_1 /usr/local/instantclient \
-	&& ln -s /usr/local/instantclient/libclntsh.so.12.1 /usr/local/instantclient/libclntsh.so \
-	&& ln -s /usr/local/instantclient/sqlplus /usr/bin/sqlplus \
-	&& rm /tmp/instantclient-*.zip \
-	&& echo 'instantclient,/usr/local/instantclient' | pecl install oci8 \
-	&& echo "extension=oci8.so" > $PHP_INI_DIR/conf.d/30-oci8.ini
-
 # php exceptions
 RUN apt-get update \
 	&& apt-get install -y \
@@ -40,10 +26,10 @@ RUN apt-get update \
 		libzip-dev \
 		libmagickwand-dev \
 		libmagickcore-dev \
-	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring \
-	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-	&& docker-php-ext-install gd \
+        libonig-dev \
+	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd \
 	&& pecl install imagick \
+    && pecl install inotify \
 	&& apt-get remove -y \
 		libfreetype6-dev \
 		libjpeg62-turbo-dev \
@@ -57,6 +43,7 @@ RUN apt-get update \
 		libmagick-dev \
 		libmagickwand-dev \
 		libmagickcore-dev \
+        libonig-dev \
 	&& rm -rf /var/lib/apt/lists/* 
 
 RUN pecl install apcu \
@@ -67,6 +54,7 @@ RUN pecl install apcu \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
     && mv /tmp/blackfire-*.so `php -r "echo ini_get('extension_dir');"`/blackfire.so \
     && echo "extension=imagick.so" > $PHP_INI_DIR/conf.d/imagick.ini \
+    && echo "extension=inotify.so" > $PHP_INI_DIR/conf.d/inotify.ini \
     && echo "extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > $PHP_INI_DIR/conf.d/blackfire.ini \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $PHP_INI_DIR/conf.d/xdebug.ini \
     && echo "xdebug.remote_enable=on" >> $PHP_INI_DIR/conf.d/xdebug.ini \
