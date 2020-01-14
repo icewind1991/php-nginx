@@ -27,7 +27,7 @@ RUN apt-get update \
 		libmagickwand-dev \
 		libmagickcore-dev \
         libonig-dev \
-	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd \
+	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd pcntl \
 	&& pecl install imagick \
     && pecl install inotify \
 	&& apt-get remove -y \
