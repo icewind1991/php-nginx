@@ -27,7 +27,8 @@ RUN apt-get update \
 		libmagickwand-dev \
 		libmagickcore-dev \
         libonig-dev \
-	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd pcntl \
+        libldap2-dev \
+	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd pcntl ldap \
 	&& pecl install imagick \
     && pecl install inotify \
 	&& apt-get remove -y \
@@ -44,6 +45,7 @@ RUN apt-get update \
 		libmagickwand-dev \
 		libmagickcore-dev \
         libonig-dev \
+        libldap2-dev \
 	&& rm -rf /var/lib/apt/lists/* 
 
 RUN pecl install apcu \
