@@ -28,6 +28,12 @@ RUN apt-get update \
 		libmagickcore-dev \
         libonig-dev \
         libldap2-dev \
+    && docker-php-ext-configure gd \
+        --with-gd \
+        --with-jpeg-dir \
+        --with-png-dir \
+        --with-zlib-dir \
+        --with-freetype-dir \
 	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd pcntl ldap \
 	&& pecl install imagick \
     && pecl install inotify \
