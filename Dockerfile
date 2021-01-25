@@ -1,4 +1,4 @@
-FROM php:7-fpm
+FROM php:7.3-fpm
 MAINTAINER  Robin Appelman <robin@icewind.nl>
 
 RUN DEBIAN_FRONTEND=noninteractive ;\
