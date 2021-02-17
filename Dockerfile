@@ -28,6 +28,7 @@ RUN apt-get update \
 		libmagickcore-dev \
         libonig-dev \
         libldap2-dev \
+        libsmbclient-dev \
     && docker-php-ext-configure gd \
         --with-gd \
         --with-jpeg-dir \
@@ -37,6 +38,7 @@ RUN apt-get update \
 	&& docker-php-ext-install iconv zip pdo pdo_pgsql pdo_sqlite pgsql pdo_mysql intl curl mbstring gd pcntl ldap \
 	&& pecl install imagick \
     && pecl install inotify \
+    && pecl install smbclient \
 	&& apt-get remove -y \
 		libfreetype6-dev \
 		libjpeg62-turbo-dev \
@@ -52,6 +54,7 @@ RUN apt-get update \
 		libmagickcore-dev \
         libonig-dev \
         libldap2-dev \
+        libsmbclient-dev \
 	&& rm -rf /var/lib/apt/lists/* 
 
 RUN pecl install apcu \
@@ -62,6 +65,7 @@ RUN pecl install apcu \
     && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp \
     && mv /tmp/blackfire-*.so `php -r "echo ini_get('extension_dir');"`/blackfire.so \
     && echo "extension=imagick.so" > $PHP_INI_DIR/conf.d/imagick.ini \
+    && echo "extension=smbclient.so" > $PHP_INI_DIR/conf.d/smbclient.ini \
     && echo "extension=inotify.so" > $PHP_INI_DIR/conf.d/inotify.ini \
     && echo "extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > $PHP_INI_DIR/conf.d/blackfire.ini \
     && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $PHP_INI_DIR/conf.d/xdebug.ini \
